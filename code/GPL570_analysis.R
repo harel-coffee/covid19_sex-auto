@@ -5,19 +5,16 @@ setwd("~/Documents/stanford/wars/gender/data")
 library("ggplot2")
 library("beanplot")
 
-load("~/Downloads/y_pred0.RData")
-load("~/Downloads/y_pred.RData")
-y_pred0 = y_pred0[, c("score", "pred_gender")]
-names(y_pred0) = c("score", "gender")
-y = rbind(y_pred[, c("score", "gender")], y_pred0)
+meta = read.csv("GPL570_meta_all.csv", stringsAsFactors = F)
+expr = read.csv("GPL570_exp.csv", stringsAsFactors = F)
+#duplicated GSM
+expr = expr[!duplicated(expr$X),]
+expr$gsm = sapply(expr$X, function(x) unlist(strsplit(x, "\\."))[1])
 
-expr_meta = read.csv("~/Downloads/human_matrix_expr.csv", stringsAsFactors = F, row.names = 1)
-expr_meta = merge(expr_meta, y, by = 0)
+expr_meta = merge( meta,expr, by.x= "gsm", by.y = "gsm")
 
-other_meta = unique(read.csv("GEO_gsm_all.csv", stringsAsFactors = F)[, c("gsm", "age", "tissue")])
-expr_meta = merge(expr_meta, other_meta, by.x = "Row.names", by.y = "gsm")
-expr_meta = expr_meta[expr_meta$ACE2 > 1, ]
-hist(log(expr_meta$ACE2 + 0.01))
+#expr_meta = expr_meta[expr_meta$ACE2 > 1, ]
+hist((expr_meta$ACE2 ))
 
 t.test(ACE2 ~ gender, data = expr_meta)
 
@@ -25,7 +22,6 @@ symbols = c("ACE2", "ESR1", "DPP4",  "GPER1", "ESR2", "AR", "PGR")
 
 ###############
 ##
-#
 expr_meta_subset = expr_meta[!is.na(expr_meta$gender), ] 
 expr_meta_subset$two_group = paste("all", as.numeric(as.factor(expr_meta_subset$gender)))
 group_patients = table(expr_meta_subset$two_group)
@@ -42,9 +38,9 @@ test = sapply(ages, function(age){
 })
 
 
-pdf(paste("figure/ARCHS_ACE2_gender.pdf", sep="_"))
+pdf(paste("figure/GPL570_ACE2_gender.pdf", sep="_"))
 # par(mar = c(14, 4, 4, 2) + 0.1, las=2)
-beanplot(log(ACE2 + 0.01)  ~ two_group, data = expr_meta_subset, ll = 0.15,
+beanplot((ACE2 )  ~ two_group, data = expr_meta_subset, ll = 0.15,
          main = "", ylab = "ACE2 Expression", side = "both", ylim=c(1,15),what = c(T, T, T, F),
          border = NA, innerborder = "gray", col = list(c("blue","blue"), c("red", "red")), 
          beanlines = "median", overalllin="median")
@@ -62,9 +58,9 @@ test = sapply(ages, function(age){
 })
 
 
-pdf(paste("figure/ARCHS_DPP4_gender.pdf", sep="_"))
+pdf(paste("figure/GPL570_DPP4_gender.pdf", sep="_"))
 # par(mar = c(14, 4, 4, 2) + 0.1, las=2)
-beanplot(log(DPP4 + 0.01)  ~ two_group, data = expr_meta_subset, ll = 0.15,
+beanplot((DPP4 )  ~ two_group, data = expr_meta_subset, ll = 0.15,
          main = "", ylab = "DPP4 Expression", side = "both", ylim=c(1,15),what = c(T, T, T, F),
          border = NA, innerborder = "gray", col = list(c("blue","blue"), c("red", "red")), 
          beanlines = "median", overalllin="median")
@@ -72,9 +68,8 @@ legend("topleft", fill = c("blue", "red"),
        legend = c("female", "male"))
 text(x=c(1:1), y = 14, labels = test)
 dev.off()
-
-############
-############
+####################
+#####################
 expr_meta_subset = expr_meta[!is.na(expr_meta$age) & !is.na(expr_meta$gender), ]
 expr_meta_subset$two_group = paste(expr_meta_subset$age, as.numeric(as.factor(expr_meta_subset$gender)))
 group_patients = table(expr_meta_subset$two_group)
@@ -93,7 +88,7 @@ test = sapply(ages, function(a){
 })
 
 
-pdf(paste("figure/ARCH5_ACE2_ages.pdf", sep="_"))
+pdf(paste("figure/GPL570_ACE2_ages.pdf", sep="_"))
 # par(mar = c(14, 4, 4, 2) + 0.1, las=2)
 beanplot((ACE2)  ~ two_group, data = expr_meta_subset, ll = 0.15,
          main = "", ylab = "ACE2 Expression", side = "both", ylim=c(1,15),what = c(T, T, T, F),
@@ -103,12 +98,14 @@ legend("topleft", fill = c("blue", "red"),
        legend = c("female", "male"))
 text(x=c(1:length(unique(expr_meta_subset$age))), y = 2, labels = test)
 dev.off()
+#}
+##################
 ##############
-###############
 for (i in 1:length(symbols)){
 gene = symbols[i]
-expr_meta_subset =  expr_meta[expr_meta$gender %in% c("female", "male"), ]
-cutoff = qnorm(0.01, mean(expr_meta_subset[,gene]), sd(expr_meta_subset[, gene]), lower.tail=F) # quantile(expr_meta[, gene])[4]
+
+expr_meta_subset =  expr_meta #[expr_meta$gender %in% c("female", "male"), ]
+cutoff = qnorm(0.01, mean(expr_meta[,gene]), sd(expr_meta[, gene]), lower.tail=F) # quantile(expr_meta[, gene])[4]
 
 expr_meta_subset$gene = expr_meta_subset[, gene]
 expr_meta_subset$expr = "high"
@@ -116,8 +113,8 @@ expr_meta_subset$expr[expr_meta_subset[, gene] < cutoff] = "low"
 
 Ttest = t.test(expr_meta_subset[, "ACE2"] ~ expr_meta_subset$expr)
 
-pdf(paste("figure/ARCHS_ACE2_", symbols[i], ".pdf", sep="_"))
-print(ggplot(expr_meta_subset, aes(x= log(gene + 0.01), y = log(ACE2 + 0.01), colour = expr )) +  theme_bw()  + 
+pdf(paste("figure/GPL570_ACE2_", symbols[i], ".pdf", sep="_"))
+print(ggplot(expr_meta_subset, aes(x= (gene), y = (ACE2 ), colour = expr )) +  theme_bw()  + 
   theme(legend.position ="bottom", axis.text=element_text(size=18), axis.title=element_text(size=18))  +                                                                                              
   geom_point(size=0.5) + 
   annotate("text", label = paste( "p = ", format(Ttest$p.value, digit=2), ", ratio = ", format(Ttest$estimate[1] / Ttest$estimate[2], digit=3), ":1", sep=""),  x = 10, y = 14, size = 6) + 
@@ -132,18 +129,17 @@ dev.off()
 
 for (i in 1:length(symbols)){
   gene = symbols[i]
+  cutoff = qnorm(0.01, mean(expr_meta[,gene]), sd(expr_meta[, gene]), lower.tail=F) # quantile(expr_meta[, gene])[4]
+  
   expr_meta_subset =  expr_meta[expr_meta$gender %in% c("female", "male"), ]
-  
-  cutoff = qnorm(0.01, mean(expr_meta_subset[,gene]), sd(expr_meta_subset[, gene]), lower.tail=F) # quantile(expr_meta[, gene])[4]
-  
   expr_meta_subset$gene = expr_meta_subset[, gene]
   expr_meta_subset$expr = "high"
   expr_meta_subset$expr[expr_meta_subset[, gene] < cutoff] = "low"
   
   Ttest = t.test(expr_meta_subset[, "DPP4"] ~ expr_meta_subset$expr)
   
-  pdf(paste("figure/ARCHS_DPP4_", symbols[i], ".pdf", sep="_"))
-  print(ggplot(expr_meta_subset, aes(x= log(gene + 0.01), y = log(DPP4 + 0.01), colour = expr )) +  theme_bw()  + 
+  pdf(paste("figure/GPL570_DPP4_", symbols[i], ".pdf", sep="_"))
+  print(ggplot(expr_meta_subset, aes(x= (gene ), y = (DPP4 ), colour = expr )) +  theme_bw()  + 
           theme(legend.position ="bottom", axis.text=element_text(size=18), axis.title=element_text(size=18))  +                                                                                              
           geom_point(size=0.5) + 
           annotate("text", label = paste( "p = ", format(Ttest$p.value, digit=2), ", ratio = ", format(Ttest$estimate[1] / Ttest$estimate[2], digit=3), ":1", sep=""),  x = 10, y = 14, size = 6) + 
@@ -156,9 +152,8 @@ for (i in 1:length(symbols)){
 
 ###############
 #compare tissue
-expr_meta_subset =  expr_meta #merge(expr_meta, tissue_info[!is.na(tissue_info$tissue), c("gsm", "tissue")], by.x= "Row.names", by.y = "gsm")
-#for some reason, pancrea, bone rendered an error "sample is too sparse to find TD"
-main_tissues = c("lung", "liver","intestine","brain", "colon","skin") #,  , ,  , ,"pancrea" "bone"  "breast",
+expr_meta_subset = expr_meta
+main_tissues = c("lung", "liver",  "pancrea", "blood", "intestine", "brain", "colon",   "skin", "bone") #,"breast",
 expr_meta_subset$tissue = sapply(expr_meta_subset$tissue, function(x){
   main_tissue = NA
   for (t in main_tissues){
@@ -170,11 +165,10 @@ expr_meta_subset$tissue = sapply(expr_meta_subset$tissue, function(x){
   main_tissue
 })
 top_tissues = names(table(expr_meta_subset$tissue))
-
 expr_meta_subset = subset(expr_meta_subset, tissue %in% top_tissues & !is.na(gender))
 expr_meta_subset$two_group = paste(expr_meta_subset$tissue, as.numeric(as.factor(expr_meta_subset$gender)))
 group_patients = table(expr_meta_subset$two_group)
-expr_meta_subset = subset(expr_meta_subset, two_group %in% names(group_patients[group_patients > 30]))
+expr_meta_subset = subset(expr_meta_subset, two_group %in% names(group_patients[group_patients > 20]))
 
 #find group statistics
 tissues = as.character(sort(unique(expr_meta_subset$tissue)))
@@ -189,15 +183,17 @@ test = sapply(tissues, function(t){
   }
 })
 
-pdf(paste("figure/ARCHS_ACE2_tissue_30.pdf", sep="_"), width = 20)
+
+
+pdf(paste("figure/GPL570_ACE2_tissue_30.pdf", sep="_"), width = 20)
 # par(mar = c(14, 4, 4, 2) + 0.1, las=2)
-beanplot(log(ACE2 + 0.01)  ~ two_group, data = expr_meta_subset, ll = 0.15,
-         main = "", ylab = "ACE2 Expression", side = "both", ylim=c(-5,10), what = c(T, T, T, F),
+beanplot(ACE2   ~ two_group, data = expr_meta_subset, ll = 0.15,
+         main = "", ylab = "ACE2 Expression", side = "both", ylim=c(1,15), what = c(T, T, T, F),
          border = NA, col = list(c("blue","blue"), c("red", "red")), 
          beanlines = "median", overalllin="median")
 legend("topleft", fill = c("blue", "red"),
        legend = c("female", "male"))
-text(x=c(1:length(unique(expr_meta_subset$tissue))), y = -0.5, labels = test)
+text(x=c(1:length(unique(expr_meta_subset$tissue))), y = 2, labels = test)
 dev.off()
 #}
 
