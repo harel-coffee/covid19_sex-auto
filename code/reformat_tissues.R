@@ -1,7 +1,7 @@
 #reformat tissues
 setwd("~/Documents/stanford/wars/gender/data")
 
-main_tissues = c("lung", "liver",  "pancrea", "blood", "intestine", "brain", "colon", "breast",  "skin", "bone", "kidney", "prostate") #,
+main_tissues = c("airway", "lung", "liver",  "pancrea", "blood", "intestine", "brain", "colon", "breast",  "skin", "bone", "kidney", "prostate", "gland") #,
 
 geo_rna_seq = read.csv("GEO_gsm_all.csv")
 

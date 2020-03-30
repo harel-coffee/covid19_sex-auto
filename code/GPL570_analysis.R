@@ -33,18 +33,21 @@ ages = "all"
 test = sapply(ages, function(age){
   expr_meta_subset_age = expr_meta_subset
   Ttest = t.test(ACE2 ~ two_group, expr_meta_subset_age)
-  paste0("p= ", format(Ttest$p.value, digits = 2, scientific=T), "\n",
-         format(Ttest$estimate[1] / Ttest$estimate[2], digit=3), ":1" )
-})
+  paste0("ratio: ", format(Ttest$estimate[1] / Ttest$estimate[2], digit=2), ":1", "\n",
+         "diff: [", format(Ttest$conf.int[1], digit=2)," ", format(Ttest$conf.int[2], digit=2), "]", "\n", 
+         "p: ", format(Ttest$p.value, digits = 2, scientific=T), "\n",
+         "n: ", nrow(expr_meta_subset_age)
+  )
+  })
 
 
 pdf(paste("figure/GPL570_ACE2_gender.pdf", sep="_"))
 # par(mar = c(14, 4, 4, 2) + 0.1, las=2)
-beanplot((ACE2 )  ~ two_group, data = expr_meta_subset, ll = 0.15,
+beanplot((ACE2 )  ~ two_group, data = expr_meta_subset, ll = 0.15, log = "",
          main = "", ylab = "ACE2 Expression", side = "both", ylim=c(1,15),what = c(T, T, T, F),
          border = NA, innerborder = "gray", col = list(c("blue","blue"), c("red", "red")), 
          beanlines = "median", overalllin="median")
-legend("topleft", fill = c("blue", "red"),
+legend("bottomleft", fill = c("blue", "red"),
        legend = c("female", "male"))
 text(x=c(1:1), y = 14, labels = test)
 dev.off()
@@ -53,18 +56,20 @@ ages = "all"
 test = sapply(ages, function(age){
   expr_meta_subset_age = expr_meta_subset
   Ttest = t.test(DPP4 ~ two_group, expr_meta_subset_age)
-  paste0("p= ", format(Ttest$p.value, digits = 2, scientific=T), "\n",
-         format(Ttest$estimate[1] / Ttest$estimate[2], digit=3), ":1" )
-})
+  paste0("ratio: ", format(Ttest$estimate[1] / Ttest$estimate[2], digit=2), ":1", "\n",
+         "diff: [", format(Ttest$conf.int[1], digit=2)," ", format(Ttest$conf.int[2], digit=2), "]", "\n", 
+         "p: ", format(Ttest$p.value, digits = 2, scientific=T), "\n",
+         "n: ", nrow(expr_meta_subset_age)
+  )})
 
 
 pdf(paste("figure/GPL570_DPP4_gender.pdf", sep="_"))
 # par(mar = c(14, 4, 4, 2) + 0.1, las=2)
-beanplot((DPP4 )  ~ two_group, data = expr_meta_subset, ll = 0.15,
-         main = "", ylab = "DPP4 Expression", side = "both", ylim=c(1,15),what = c(T, T, T, F),
+beanplot((DPP4 )  ~ two_group, data = expr_meta_subset, ll = 0.15, log = "",
+         main = "", ylab = "DPP4 Expression", side = "both", ylim=c(0,15),what = c(T, T, T, F),
          border = NA, innerborder = "gray", col = list(c("blue","blue"), c("red", "red")), 
          beanlines = "median", overalllin="median")
-legend("topleft", fill = c("blue", "red"),
+legend("bottomleft", fill = c("blue", "red"),
        legend = c("female", "male"))
 text(x=c(1:1), y = 14, labels = test)
 dev.off()
@@ -82,21 +87,24 @@ by(expr_meta_subset$ACE2, expr_meta_subset$age, mean)
 ages = sort(unique(expr_meta_subset$age))
 test = sapply(ages, function(a){
   expr_meta_subset_age = subset(expr_meta_subset, age == a)
-  Ttest = t.test(ACE2 ~ two_group, expr_meta_subset_age, alternative = "less")
-  paste0("p= ", format(Ttest$p.value, digits = 2, scientific=T), "\n",
-         format(Ttest$estimate[1] / Ttest$estimate[2], digit=3), ":1" )
-})
+  Ttest = t.test(ACE2 ~ two_group, expr_meta_subset_age, alternative = "two.sided")
+  paste0("ratio: ", format(Ttest$estimate[1] / Ttest$estimate[2], digit=2), ":1", "\n",
+         "diff: [", format(Ttest$conf.int[1], digit=2)," ", format(Ttest$conf.int[2], digit=2), "]", "\n", 
+         "p: ", format(Ttest$p.value, digits = 2, scientific=T), "\n",
+         "n: ", nrow(expr_meta_subset_age)
+  )
+  })
 
 
 pdf(paste("figure/GPL570_ACE2_ages.pdf", sep="_"))
 # par(mar = c(14, 4, 4, 2) + 0.1, las=2)
-beanplot((ACE2)  ~ two_group, data = expr_meta_subset, ll = 0.15,
-         main = "", ylab = "ACE2 Expression", side = "both", ylim=c(1,15),what = c(T, T, T, F),
+beanplot((ACE2)  ~ two_group, data = expr_meta_subset, ll = 0.15, log = "",
+         main = "", ylab = "ACE2 Expression", side = "both", ylim=c(0,15),what = c(T, T, T, F),
          border = NA, col = list(c("blue","blue"), c("red", "red")), 
          beanlines = "median", overalllin="median")
-legend("topleft", fill = c("blue", "red"),
+legend("bottomleft", fill = c("blue", "red"),
        legend = c("female", "male"))
-text(x=c(1:length(unique(expr_meta_subset$age))), y = 2, labels = test)
+text(x=c(1:length(unique(expr_meta_subset$age))), y = 14, labels = test)
 dev.off()
 #}
 ##################
@@ -153,7 +161,7 @@ for (i in 1:length(symbols)){
 ###############
 #compare tissue
 expr_meta_subset = expr_meta
-main_tissues = c("lung", "liver",  "pancrea", "blood", "intestine", "brain", "colon",   "skin", "bone") #,"breast",
+main_tissues = c("lung", "liver",  "pancrea", "blood", "intestine", "brain", "colon",   "skin", "bone", "air", "gland") #,"breast",
 expr_meta_subset$tissue = sapply(expr_meta_subset$tissue, function(x){
   main_tissue = NA
   for (t in main_tissues){
@@ -176,9 +184,11 @@ test = sapply(tissues, function(t){
   expr_meta_subset_age = subset(expr_meta_subset, tissue == t)
   if (sum(table(expr_meta_subset_age$two_group) > 10) > 1){
   Ttest = t.test(ACE2 ~ two_group, expr_meta_subset_age, alternative = "two.sided")
-  paste0("p= ", format(Ttest$p.value, digits = 2, scientific=T), "\n",
-         format(Ttest$estimate[1] / Ttest$estimate[2], digit=3), ":1" )
-  }else{
+  paste0("ratio: ", format(Ttest$estimate[1] / Ttest$estimate[2], digit=2), ":1", "\n",
+         "diff: [", format(Ttest$conf.int[1], digit=2)," ", format(Ttest$conf.int[2], digit=2), "]", "\n", 
+         "p: ", format(Ttest$p.value, digits = 2, scientific=T), "\n",
+         "n: ", nrow(expr_meta_subset_age)
+  )  }else{
     NA
   }
 })
@@ -187,13 +197,13 @@ test = sapply(tissues, function(t){
 
 pdf(paste("figure/GPL570_ACE2_tissue_30.pdf", sep="_"), width = 20)
 # par(mar = c(14, 4, 4, 2) + 0.1, las=2)
-beanplot(ACE2   ~ two_group, data = expr_meta_subset, ll = 0.15,
-         main = "", ylab = "ACE2 Expression", side = "both", ylim=c(1,15), what = c(T, T, T, F),
+beanplot(ACE2   ~ two_group, data = expr_meta_subset, ll = 0.15, log = "",
+         main = "", ylab = "ACE2 Expression", side = "both", ylim=c(0,15), what = c(T, T, T, F),
          border = NA, col = list(c("blue","blue"), c("red", "red")), 
          beanlines = "median", overalllin="median")
-legend("topleft", fill = c("blue", "red"),
+legend("bottomleft", fill = c("blue", "red"),
        legend = c("female", "male"))
-text(x=c(1:length(unique(expr_meta_subset$tissue))), y = 2, labels = test)
+text(x=c(1:length(unique(expr_meta_subset$tissue))), y = 14, labels = test)
 dev.off()
 #}
 
@@ -203,10 +213,57 @@ tissue_info = read.csv("GEO_gsm_all.csv")
 expr_meta_subset = merge(expr_meta, tissue_info[, c("gsm", "gse", "tissue")], by.x= "Row.names", by.y = "gsm")
 tail(sort(by(expr_meta_subset$ACE2, expr_meta_subset$gse, median)), 10)
 expr_meta_subset = expr_meta_subset[expr_meta_subset$gender == "female" & expr_meta_subset$tissue %in%  c("tissue: blood","tissue: cord blood"),]
-t.test(ACE2 ~ tissue, data = expr_meta_subset)
+#t.test(ACE2 ~ tissue, data = expr_meta_subset)
 
 expr_meta_subset = expr_meta_subset[ expr_meta_subset$tissue %in%  c("tissue: bronchial brushing"),]
-t.test(ACE2 ~ gender, data = expr_meta_subset)
+#t.test(ACE2 ~ gender, data = expr_meta_subset)
 
+###
+#check airway
+airway = sapply(1:nrow(expr_meta), function(x){
+  if (length(grep("airway", paste(expr_meta$source_name_ch1[x], expr_meta$characteristics_ch1[x]), ignore.case = T)) > 0){
+    if (length(grep("epithe", paste(expr_meta$source_name_ch1[x], expr_meta$characteristics_ch1[x]), ignore.case = T)) > 0){
+      T
+    }else{
+      F
+    }
+  }else{
+    F
+  }
+})
 
+expr_meta_subset = expr_meta[airway , ]
+Ttest = t.test(ACE2 ~ gender, expr_meta_subset, alternative = "two.sided")
+text =     paste0("ratio: ", format(Ttest$estimate[1] / Ttest$estimate[2], digit=2), ":1", "\n",
+                  "diff: [", format(Ttest$conf.int[1], digit=2)," ", format(Ttest$conf.int[2], digit=2), "]", "\n", 
+                  "p: ", format(Ttest$p.value, digits = 2, scientific=T), "\n",
+                  "n: ", nrow(expr_meta_subset)
+)
+
+pdf(paste("figure/GPL570_ACE2_airway.pdf", sep="_"))
+# par(mar = c(14, 4, 4, 2) + 0.1, las=2)
+beanplot((ACE2)  ~ gender, data = expr_meta_subset, ll = 0.15, log = "",
+         main = "", ylab = "ACE2 Expression", side = "both", ylim=c(0,15),what = c(T, T, T, F),
+         border = NA, col = list(c("blue","blue"), c("red", "red")), 
+         beanlines = "median", overalllin="median")
+legend("bottomleft", fill = c("blue", "red"),
+       legend = c("female", "male"))
+text(x=c(1), y = 14, labels = text)
+dev.off()
+
+##
+#maternal blood
+maternal = sapply(1:nrow(expr_meta), function(x){
+  if (length(grep("blood", paste(expr_meta$source_name[x], expr_meta$characteristics[x]), ignore.case = T)) > 0){
+    if (length(grep("maternal", paste(expr_meta$source_name[x], expr_meta$characteristics[x]), ignore.case = T)) > 0){
+      T
+    }else{
+      F
+    }
+  }else{
+    F
+  }
+})
+
+t.test(expr_meta$ACE2[maternal], expr_meta$ACE2[expr_meta$tissue == "blood"])
 
