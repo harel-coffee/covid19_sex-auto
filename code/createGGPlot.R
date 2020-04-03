@@ -4,7 +4,7 @@ createGGPlot <- function(currPheno, measureVar, groupVars, main="GGPLot", ylab="
   temp = summarySE(currPheno, measurevar=measureVar, groupvars=groupVars)[, c(groupVars, measureVar, "se","max_group", "max_all")]
   temp_line = createLines(temp)
   temp_text = createText(currPheno, temp, alternative)
-  a = ggplot() +
+  a = ggplot() +  theme_bw() + 
     geom_violin(data=currPheno, aes(x=group,y=score), fill='grey',trim=F) +
     geom_jitter(data=currPheno, aes(x=group,y=score, color=color), size = 2, position=position_jitter(width=jitterWidth, height=jitterHight)) +
     guides(color=FALSE) +
