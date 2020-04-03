@@ -85,7 +85,7 @@ tissue_ESR1_AR = NULL
 for (tissue in tissues){
 background =  all_genes_ensembl #rownames(expr_subet) #names(head(sort(cors[1, ]), 20000))
   
-select_samples = expr_meta$sample_id[!is.na(expr_meta$tissue_old) & expr_meta$source == "gtex" & expr_meta$tissue_old == tissue & expr_meta$gender %in% c("female", "male")]
+select_samples = expr_meta$sample_id[!is.na(expr_meta$tissue_old) & expr_meta$source == "gtex" & expr_meta$tissue_old == tissue & expr_meta$gender %in% c("male", "female")]
 expr_subet = all_exprs[, colnames(all_exprs) %in% select_samples]
 cors = cor(t(expr_subet[c("ENSG00000184012", "ENSG00000197635", "ENSG00000159640", "ENSG00000091831"), ]), t(expr_subet[rownames(expr_subet) %in% all_genes_ensembl, ]))
 top_negative = names(head(sort(cors[1, ]), 200))
@@ -104,5 +104,5 @@ tissue_ESR1_AR = rbind(tissue_ESR1_AR, data.frame( ESR1_TMPRSS2_neg, ESR1_TMPRSS
 
 rownames(tissue_ESR1_AR) = tissues
 library(pheatmap)
-pheatmap(t(-log(tissue_ESR1_AR, 10)), cellheight = 10, cellwidth = 10, show_colnames=T, legend=T, show_rownames=T, cluster_cols=T, cluster_rows = F, filename = "TMPRSS2_ESR1_AR.pdf") #, filename = "ritonavir_dz_cor_dose.pdf, filename = "ritonavir_selected_dz_cor.pdf"
+pheatmap(t(-log(tissue_ESR1_AR, 10)), cellheight = 10, cellwidth = 10, show_colnames=T, legend=T, show_rownames=T, cluster_cols=F, cluster_rows = F, filename = "figure/TMPRSS2_ESR1_AR.pdf") #, filename = "ritonavir_dz_cor_dose.pdf, filename = "ritonavir_selected_dz_cor.pdf"
 
