@@ -22,4 +22,12 @@ All the Python scripts were tested under the following environment:
 - Python Version: 3.7
 - Pytorch Version: 
 
+Command to run gender-tissue cross-validation:
+`python predict_gender_tissue.py --fold 0 --dataset GPL11154 --dropout 0.1`
 
+Command to run gender-tissue prediction:
+`python predict_gender_tissue.py --fold all --dataset GPL11154 --dropout 0.1`
+
+
+### other
+Other code and files either from intermediate results or additional analysis we have done but not presented in the final text. Readers can ignore this folder.
