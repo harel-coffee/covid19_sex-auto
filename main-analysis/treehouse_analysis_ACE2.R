@@ -1,7 +1,4 @@
 #analyze ACE2 from the treehouse project
-#setwd("~/Documents/stanford/wars/gender/data")
-setwd('/Users/msun/Documents/covid-19/main')
-
 library(ggplot2)
 library(psych)
 library(beanplot)
@@ -9,7 +6,10 @@ library(cowplot)
 library(stringr)
 
 rm(list=ls())
-expr_meta = read.csv("raw/treehouse_expr_meta_final_v8.csv")
+root = dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(root)
+fn = paste0(root, '/raw/treehouse_expr_meta_final_v8.csv')
+expr_meta = read.csv(fn)
 expr_meta = expr_meta[!is.na(expr_meta$gender) & expr_meta$ACE2 > 0.5, ]
 symbols = c("ACE2", "ESR1", "DPP4",  "GPER1", "ESR2", "AR", "PGR", "TMPRSS2")
 

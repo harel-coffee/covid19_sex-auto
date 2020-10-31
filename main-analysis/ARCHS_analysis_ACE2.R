@@ -12,9 +12,12 @@ library("stringr")
 
 ##### start here ####
 rm(list=ls())
-setwd('/Users/msun/Documents/covid-19/main/raw')
+root = dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(root)
+fn = paste0(root, '/raw/ARCHS_expr_meta_final_v9.csv')
+expr_meta = read.csv(fn)
 gpl= 'GPL11154'
-expr_meta = read.csv("ARCHS_expr_meta_final_v9.csv")
+expr_meta = read.csv(fn)
 if (gpl=='all'){
     expr_meta = expr_meta[!is.na(expr_meta$gender) & expr_meta$ACE2 > 0.5 , ]
 }else{

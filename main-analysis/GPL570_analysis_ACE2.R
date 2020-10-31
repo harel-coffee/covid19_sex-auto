@@ -12,8 +12,10 @@ library(plyr)
 #####################
 
 rm(list=ls())
-setwd('/Users/msun/Documents/covid-19/main/raw')
-expr_meta = read.csv("GPL570_expr_meta_final_v9.csv")
+root = dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(root)
+fn = paste0(root, '/raw/GPL570_expr_meta_final_v9.csv')
+expr_meta = read.csv(fn)
 expr_meta = expr_meta[!is.na(expr_meta$gender), ]
 
 expr_meta$tissue = as.character(expr_meta$tissue)

@@ -8,7 +8,10 @@ library("stringr")
 
 ##### start here ####
 rm(list=ls())
-expr_meta = read.csv("ARCHS_expr_meta_final_v9.csv")
+root = dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(root)
+fn = paste0(root, '/raw/ARCHS_expr_meta_final_v9.csv')
+expr_meta = read.csv(fn)
 gpl= 'GPL11154'
 if (gpl=='all'){
     expr_meta = expr_meta[!is.na(expr_meta$gender) & expr_meta$TMPRSS2 > 0.5, ] # 'GPL16791' , 'GPL11154', 'GPL18573'
@@ -34,7 +37,6 @@ paste("% predicted age", sum(table(expr_meta$age))/nrow(expr_meta))
 #should we remove weakly expressed TMPRSS2
 #expr_meta = expr_meta[!is.na(expr_meta$gender) & expr_meta$TMPRSS2 > 0.5, ]
 #symbols = c("ACE2", "ESR1", "DPP4",  "GPER1", "ESR2", "AR", "PGR")
-
 
 
 ###############
