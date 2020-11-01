@@ -44,6 +44,8 @@ Command to run gender-tissue prediction:
 Command to run age prediction:
 
 `python GPL11154_XGB_age.py`
+### Patients_code_data
+The raw expression data of the COVID-19 infected patients were obtained from GEO (https://www.ncbi.nlm.nih.gov/geo/) and is provided in /data/ directory. The raw reads in all the datasets were used to identify the differentially expressed (DE) genes between all possible combination of infection and control group for male and female using the “Diff_Exp” utility provided in OCTAD (http://octad.org/). The DE genes from each datasets were used as input in “Venn_diagramm_and_enrichment.R” for comparison and gene ontology (GO) enrichment analysis. In addition, normalized count value (TPM value) of blood dataset (GSE157103) was used as input in the “Immune_cell_composition_and_figure_code.R” to identify the cell composition and their associations with the severity of the COVID-19 infection in male and female patients.   
 
 ### other
 Other code and files either from intermediate results or additional analysis we have done but not presented in the final text, only for record purpose. Readers can ignore this folder.
