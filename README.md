@@ -30,6 +30,8 @@ Python Dependencies:
 - sklearn
 - pickle
 - xgboost
+- keras
+- imblearn
 
 Command to run gender-tissue cross-validation:
 
@@ -39,6 +41,9 @@ Command to run gender-tissue prediction:
 
 `python predict_gender_tissue.py --fold all --dataset GPL11154 --dropout 0.1`
 
+Command to run age prediction:
+
+`python GPL11154_XGB_age.py`
 
 ### other
 Other code and files either from intermediate results or additional analysis we have done but not presented in the final text, only for record purpose. Readers can ignore this folder.

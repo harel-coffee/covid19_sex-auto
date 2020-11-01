@@ -45,8 +45,8 @@ import pickle
 from imblearn.pipeline import Pipeline
 
 
-meta = pd.read_csv('/Users/shanjuyeh/Desktop/Project/COVID-19_AGE GROUP/ARCHS4/age_meta_ARCHS4_new.csv')
-data = pd.read_csv('/Users/shanjuyeh/Desktop/Project/COVID-19_AGE GROUP/age_prediction/GPL11154/ARCHS_GPL11154_final.csv')
+meta = pd.read_csv('./input/age_meta_ARCHS4_new.csv')
+data = pd.read_csv('./input/ARCHS_GPL11154_final.csv')
 
 data = data.fillna(0)
 data = data.drop(['DDX3Y', 'EIF1AY', 'KDM5D', 'RPS4Y1', 'USP9Y'], axis=1) # remove gender features
@@ -147,7 +147,7 @@ ar_finish = pd.concat([com, y_pred, y_score], axis=1)
 ar_finish = ar_finish.rename(columns={'gsm':'id', 'label':'age', 'pre':'pred'})
 
 ar_complete = pd.concat([ar_finish, ar_un_finish], axis=0)
-ar_complete.to_csv('/Users/shanjuyeh/Desktop/Project/COVID-19_AGE GROUP/age_prediction/GPL11154/GPL11154_result_new.csv')
+ar_complete.to_csv('./output/GPL11154_result_new.csv')
 
 g1 = ar_complete[ar_complete['pred']==0]
 g2 = ar_complete[ar_complete['pred']==1]

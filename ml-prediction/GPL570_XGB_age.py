@@ -42,8 +42,8 @@ import imblearn
 from imblearn.over_sampling import SMOTE
 import pickle
 
-meta = pd.read_csv('/home/ubuntu/chenlab_deeplearning/DL_yeh/covid-19/age_predict/GPL570/age_meta_GPL570.csv')
-data = pd.read_csv('/home/ubuntu/chenlab_deeplearning/DL_yeh/covid-19/age_predict/GPL570/GPL570_final.csv')
+meta = pd.read_csv('./input/age_meta_GPL570.csv')
+data = pd.read_csv('./input/GPL570_final.csv')
 data = data.fillna(0)
 data = data.rename(columns={'Unnamed: 0': 'gsm'})
 data = data.drop(['DDX3Y', 'EIF1AY', 'KDM5D', 'RPS4Y1', 'USP9Y'], axis=1) # remove gender features
@@ -147,7 +147,7 @@ GPL_finish = pd.concat([com, y_pred, y_score], axis=1)
 GPL_finish = GPL_finish.rename(columns={'gsm':'id', 'label':'age'})
 
 GPL_complete = pd.concat([GPL_finish, GPL_un_finish], axis=0)
-GPL_complete.to_csv('/home/ubuntu/chenlab_deeplearning/DL_yeh/covid-19/age_predict/GPL570/GPL570_result_1.csv')
+GPL_complete.to_csv('./output/GPL570_result_1.csv')
 
 g1 = GPL_complete[GPL_complete['pred']==0].shape[0]
 g2 = GPL_complete[GPL_complete['pred']==1].shape[0]
